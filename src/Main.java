@@ -89,6 +89,15 @@ public class Main extends Application {
         snapToEdge();
         System.gc();
     }
+    private void end(){ //closes all windows.
+        piece.kill();
+        nextPiece.kill();
+        for(Square sqr: backgroundSquares)
+            sqr.kill();
+        hideScore();
+        leftEdge.kill();
+        rightEdge.kill();
+    }
 
     private void updateLevel(){
         //determines time in ms for each descent of the piece due to gravity according to standardized Tetris formula
@@ -125,6 +134,7 @@ public class Main extends Application {
     private void spawnPiece(){
         piece.kill();                               //gets rid of old piece
         nextPiece.kill();                           //gets rid of old nextPiece
+        scanRows();                                 //scans rows to see if previous piece filled one
         piece = new Tetromino(nextPiece.getType()); //makes the new piece spawn as the type shown to the user
         nextPiece = new Tetromino(stageWidth+3,2);  //makes new 'next' piece and puts it beyond the board
         if(ghostsEnabled)
@@ -132,7 +142,6 @@ public class Main extends Application {
         snapToEdge();
         rightEdge.putOnTop();
         lastDown=System.currentTimeMillis();
-        scanRows();                                 //scans rows to see if previous piece filled one
     }
 
     private void scanRows() {
@@ -241,6 +250,8 @@ public class Main extends Application {
             reset();
         if (e.getCode() == KeyCode.ALT)
             toggleGhosts();
+        if (e.getCode() == KeyCode.Q)
+            end();
     };
     public void start(Stage primaryStage) {
         initialize(); //called at program start
